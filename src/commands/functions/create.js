@@ -201,26 +201,26 @@ const DEFAULT_PRIORITY = 999
  * @returns {string | never} - functions directory or throws an error
  */
 const ensureFunctionDirExists = async function () {
-  const { api, config, site } = this.netlify;
-  const { log } = this;
-  let functionsDirHolder = config.build && config.build.functions;
-  let siteData = null;
-  const siteId = site.id;
+  const { api, config, site } = this.netlify
+  const { log } = this
+  let functionsDirHolder = config.build && config.build.functions
+  let siteData = null
+  const siteId = site.id
 
   // try to find functions_dir in site settings if not in user's netlify config
   if (!functionsDirHolder) {
     try {
-      siteData = await api.getSite({ siteId });
-    } catch(error) {
+      siteData = await api.getSite({ siteId })
+    } catch (error) {
       if (error.status === 404) {
         error('Site not found')
       } else {
         error(error.message)
-      } 
+      }
     }
 
     // https://open-api.netlify.com/#operation/getSite
-    functionsDirHolder = siteData?.build_settings?.functions_dir;
+    functionsDirHolder = siteData?.build_settings?.functions_dir
   }
 
   if (!functionsDirHolder) {
@@ -241,11 +241,13 @@ const ensureFunctionDirExists = async function () {
         body: {
           build_settings: {
             functions_dir: functionsDirHolder,
-          }
-        }
+          },
+        },
       })
-      log(`${NETLIFYDEVLOG} functions folder ${chalk.magenta.inverse(functionsDirHolder)} updated in app build settings`)
-    } catch(error) {
+      log(
+        `${NETLIFYDEVLOG} functions folder ${chalk.magenta.inverse(functionsDirHolder)} updated in app build settings`,
+      )
+    } catch (error) {
       error('Error updating site settings')
     }
 
